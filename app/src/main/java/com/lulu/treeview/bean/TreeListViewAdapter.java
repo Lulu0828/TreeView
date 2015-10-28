@@ -36,12 +36,13 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter {
     private OnTreeNodeClickListener onTreeNodeClickListener;
 
     public TreeListViewAdapter(ListView mTree, Context context, List<T> datas,
-                               int defaultExpandLevel) {
+                               int defaultExpandLevel) throws IllegalAccessException {
         this.context = context;
         inflater = LayoutInflater.from(context);
         // 对所有的Node进行排序
-
+        allNodes = TreeHelper.getSortedNodes(datas, defaultExpandLevel);
         // 过滤出可见的Node
+        nodes = TreeHelper.filterVisibleNode(allNodes);
 
 
         // 设置节点点击时，可以展开以及关闭
@@ -64,8 +65,7 @@ public abstract class TreeListViewAdapter<T> extends BaseAdapter {
             if (!node.isLeaf()) {
                 node.setExpand(!node.isExpand());
                 // 过滤出所有可见的Node
-
-
+                nodes = TreeHelper.filterVisibleNode(allNodes);
                 // 刷新视图
                 notifyDataSetChanged();
             }
